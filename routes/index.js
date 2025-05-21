@@ -1,9 +1,16 @@
-var express = require('express');
-var router = express.Router();
+// routes/index.js
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+const express = require("express");
+const router = express.Router();
+
+// Import des fichiers de routes spécifiques
+const userRoutes = require("./users");
+const catwayRoutes = require("./catways");
+const reservationRoutes = require("./reservations");
+
+// Routes principales
+router.use("/users", userRoutes);
+router.use("/catways", catwayRoutes);
+router.use("/reservations", reservationRoutes);
 
 module.exports = router;

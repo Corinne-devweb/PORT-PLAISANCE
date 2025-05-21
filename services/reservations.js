@@ -3,25 +3,24 @@
 const Reservation = require("../models/reservation");
 const Catway = require("../models/catway");
 
-// Fonction pour lister toutes les réservations d'un catway
+// Lister toutes les réservations d’un catway
 exports.getAll = async (req, res) => {
   try {
     const catway = await Catway.findOne({ catwayNumber: req.params.id });
-
-    if (!catway) {
-      return res.status(404).send("Catway non trouvé");
-    }
+    if (!catway) return res.status(404).send("Catway non trouvé");
 
     const reservations = await Reservation.find({
       catwayNumber: req.params.id,
     });
     res.status(200).json(reservations);
   } catch (err) {
-    res.status(500).send("Erreur lors de la récupération des réservations");
+    res
+      .status(500)
+      .send("Erreur lors de la récupération des réservations : " + err.message);
   }
 };
 
-// Fonction pour récupérer les détails d'une réservation spécifique
+// Récupérer une réservation spécifique
 exports.getById = async (req, res) => {
   try {
     const reservation = await Reservation.findOne({
@@ -29,29 +28,34 @@ exports.getById = async (req, res) => {
       _id: req.params.reservationId,
     });
 
-    if (!reservation) {
-      return res.status(404).send("Réservation non trouvée");
-    }
+    if (!reservation) return res.status(404).send("Réservation non trouvée");
 
     res.status(200).json(reservation);
   } catch (err) {
-    res.status(500).send("Erreur lors de la récupération de la réservation");
+    res
+      .status(500)
+      .send(
+        "Erreur lors de la récupération de la réservation : " + err.message
+      );
   }
 };
 
-// Fonction pour ajouter une nouvelle réservation
+// Ajouter une réservation
 exports.add = async (req, res) => {
   try {
     const catway = await Catway.findOne({ catwayNumber: req.params.id });
-
-    if (!catway) {
-      return res.status(404).send("Catway non trouvé");
-    }
+    if (!catway) return res.status(404).send("Catway non trouvé");
 
     const { clientName, boatName, startDate, endDate } = req.body;
 
     if (!clientName || !boatName || !startDate || !endDate) {
       return res.status(400).send("Tous les champs sont requis");
+    }
+
+    if (new Date(startDate) > new Date(endDate)) {
+      return res
+        .status(400)
+        .send("La date de début ne peut pas être postérieure à la date de fin");
     }
 
     const newReservation = new Reservation({
@@ -65,29 +69,32 @@ exports.add = async (req, res) => {
     await newReservation.save();
     res.status(201).json(newReservation);
   } catch (err) {
-    res.status(500).send("Erreur lors de la création de la réservation");
+    res
+      .status(500)
+      .send("Erreur lors de la création de la réservation : " + err.message);
   }
 };
 
-// Fonction pour modifier une réservation existante
+// Modifier une réservation existante
 exports.update = async (req, res) => {
   try {
     const catway = await Catway.findOne({ catwayNumber: req.params.id });
-
-    if (!catway) {
-      return res.status(404).send("Catway non trouvé");
-    }
+    if (!catway) return res.status(404).send("Catway non trouvé");
 
     const reservation = await Reservation.findOne({
       catwayNumber: req.params.id,
       _id: req.params.reservationId,
     });
 
-    if (!reservation) {
-      return res.status(404).send("Réservation non trouvée");
-    }
+    if (!reservation) return res.status(404).send("Réservation non trouvée");
 
     const { clientName, boatName, startDate, endDate } = req.body;
+
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+      return res
+        .status(400)
+        .send("La date de début ne peut pas être postérieure à la date de fin");
+    }
 
     reservation.clientName = clientName || reservation.clientName;
     reservation.boatName = boatName || reservation.boatName;
@@ -97,31 +104,30 @@ exports.update = async (req, res) => {
     await reservation.save();
     res.status(200).json(reservation);
   } catch (err) {
-    res.status(500).send("Erreur lors de la mise à jour de la réservation");
+    res
+      .status(500)
+      .send("Erreur lors de la mise à jour de la réservation : " + err.message);
   }
 };
 
-// Fonction pour supprimer une réservation
+// Supprimer une réservation
 exports.delete = async (req, res) => {
   try {
     const catway = await Catway.findOne({ catwayNumber: req.params.id });
-
-    if (!catway) {
-      return res.status(404).send("Catway non trouvé");
-    }
+    if (!catway) return res.status(404).send("Catway non trouvé");
 
     const reservation = await Reservation.findOne({
       catwayNumber: req.params.id,
       _id: req.params.reservationId,
     });
 
-    if (!reservation) {
-      return res.status(404).send("Réservation non trouvée");
-    }
+    if (!reservation) return res.status(404).send("Réservation non trouvée");
 
-    await reservation.remove();
+    await Reservation.deleteOne({ _id: reservation._id });
     res.status(200).send("Réservation supprimée avec succès");
   } catch (err) {
-    res.status(500).send("Erreur lors de la suppression de la réservation");
+    res
+      .status(500)
+      .send("Erreur lors de la suppression de la réservation : " + err.message);
   }
 };

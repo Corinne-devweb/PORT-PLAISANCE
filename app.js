@@ -1,60 +1,43 @@
 // app.js
 
-// Import des dépendances
+// 1. Charger les variables d'environnement
+require("dotenv").config({ path: `env/.env.${process.env.NODE_ENV || "dev"}` });
+
 const express = require("express");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 const cors = require("cors");
-const dotenv = require("dotenv");
 const path = require("path");
 
-// Import des routes
-const userRoutes = require("./routes/users");
-const catwayRoutes = require("./routes/catways");
-const reservationRoutes = require("./routes/reservations");
+// 2. Import de la connexion MongoDB centralisée
+const connectDB = require("./DB/mongo");
 
-// Chargement du fichier .env
-dotenv.config();
+// 3. Import du routeur principal
+const routes = require("./routes");
 
-// Initialisation de l'application Express
 const app = express();
 
-// Middleware de gestion du corps des requêtes JSON
-app.use(bodyParser.json());
+// 4. Middlewares globaux
 app.use(cors());
+app.use(express.json()); // remplace body-parser
+app.use(express.static("public")); // si tu as un frontend
 
-// Connexion à la base de données MongoDB
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.URL_MONGO, {
-      dbName: "russel",
-    });
-    console.log("MongoDB connecté avec succès");
-  } catch (error) {
-    console.error("Erreur de connexion à MongoDB:", error);
-    process.exit(1);
-  }
-};
-
+// 5. Connexion à MongoDB
 connectDB();
 
-// Routes
-app.get("/", (req, res) => {
-  res.send("Bienvenue sur l'API du Port de Plaisance de Russell");
-});
+// 6. Routes
+app.use("/api", routes);
 
-app.get("/docs", (req, res) => {
-  res.send("Documentation de l'API");
-});
-
-app.use("/api/users", userRoutes);
-app.use("/api/catways", catwayRoutes);
-app.use("/api/catways/:catwayNumber/reservations", reservationRoutes);
-
-// Middleware d'erreurs
+// 7. Middleware de gestion des erreurs
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send("Quelque chose s'est mal passé!");
+  res.status(500).send("Une erreur est survenue !");
+});
+
+// 8. Port d’écoute
+const PORT = process.env.PORT || 3081;
+app.listen(PORT, () => {
+  console.log(
+    `✅ Serveur en écoute sur le port ${PORT} (${process.env.NODE_ENV})`
+  );
 });
 
 module.exports = app;
