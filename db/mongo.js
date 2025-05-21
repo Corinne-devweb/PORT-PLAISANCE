@@ -1,21 +1,19 @@
+// DB/mongo.js
+
 const mongoose = require("mongoose");
 
-const clientOptions = {
-  useNewUrlParser: true,
-  dbName: "russel",
-};
-
-exports.initClientDbConnection = async () => {
+const connectDB = async () => {
   try {
-    /* ATTENTION
-        On essaie de se connecté à mongoDB en utilisant la variable d'environnement URL_MONGO
-        Il faut donc ne pas oublier de l'ajouter au fichier .env
-        URL_MONGO prends pour valeur la chaine de connexion de votre cluster mongoDB
-        */
-    await mongoose.connect(process.env.URL_MONGO, clientOptions);
-    console.log("Connected");
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      dbName: "russel", // tu peux aussi le passer via .env si besoin
+    });
+    console.log("✅ MongoDB connecté avec succès");
   } catch (error) {
-    console.log(error);
-    throw error;
+    console.error("❌ Erreur de connexion à MongoDB :", error);
+    process.exit(1); // Arrête l'app si la DB ne se connecte pas
   }
 };
+
+module.exports = connectDB;

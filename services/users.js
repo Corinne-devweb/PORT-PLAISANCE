@@ -1,6 +1,8 @@
 // services/users.js
 
 const User = require("../models/user");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 // Fonction pour créer un utilisateur
 exports.add = async (req, res) => {
@@ -71,8 +73,7 @@ exports.update = async (req, res) => {
 
     // Si le mot de passe est modifié, on le hash avant de le mettre à jour
     if (password) {
-      user.password = password;
-      user.password = await bcrypt.hash(user.password, 10);
+      user.password = await bcrypt.hash(password, 10);
     }
 
     await user.save();
