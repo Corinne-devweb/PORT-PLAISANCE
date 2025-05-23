@@ -1,53 +1,24 @@
 const express = require("express");
 const router = express.Router();
-
-// Import des fonctions du service
-const service = require("../services/reservations");
-
-// Import du middleware pour vérifier l'existence du catway
+const reservationService = require("../services/reservations");
+const authMiddleware = require("../middleware/auth");
 const checkCatwayExists = require("../middleware/checkCatwayExists");
 
-// Import du middleware d'authentification
-const authMiddleware = require("../middleware/auth"); // Utilisation du fichier auth.js
+// 1. Routes principales (standard REST)
+router.get("/", authMiddleware, reservationService.getAll);
+router.post("/", authMiddleware, reservationService.create);
 
-// La route pour lister toutes les réservations d'un catway - protégée par l'authentification
+// 2. Routes par ID de réservation
+router.get("/:reservationId", authMiddleware, reservationService.getById);
+router.put("/:reservationId", authMiddleware, reservationService.update);
+router.delete("/:reservationId", authMiddleware, reservationService.delete);
+
+// 3. Routes spécifiques aux catways (optionnel)
 router.get(
-  "/:id/reservations",
+  "/catway/:catwayId",
   authMiddleware,
   checkCatwayExists,
-  service.getAll
-);
-
-// La route pour récupérer les détails d'une réservation spécifique - protégée par l'authentification
-router.get(
-  "/:id/reservations/:reservationId",
-  authMiddleware,
-  checkCatwayExists,
-  service.getById
-);
-
-// La route pour ajouter une nouvelle réservation - protégée par l'authentification
-router.post(
-  "/:id/reservations",
-  authMiddleware,
-  checkCatwayExists,
-  service.add
-);
-
-// La route pour modifier une réservation existante - protégée par l'authentification
-router.put(
-  "/:id/reservations/:reservationId",
-  authMiddleware,
-  checkCatwayExists,
-  service.update
-);
-
-// La route pour supprimer une réservation - protégée par l'authentification
-router.delete(
-  "/:id/reservations/:reservationId",
-  authMiddleware,
-  checkCatwayExists,
-  service.delete
+  reservationService.getByCatway
 );
 
 module.exports = router;
