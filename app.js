@@ -1,14 +1,13 @@
 // app.js
 
 // 1. Charger les variables d'environnement
-require("dotenv").config({ path: `env/.env.${process.env.NODE_ENV || "dev"}` });
 
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
 
 // 2. Import de la connexion MongoDB centralisée
-const connectDB = require("./DB/mongo");
+const connectDB = require("./db/mongo");
 
 // 3. Import du routeur principal
 const routes = require("./routes");
@@ -33,7 +32,7 @@ app.use((err, req, res, next) => {
 });
 
 // 8. Port d’écoute
-const PORT = process.env.PORT || 3081;
+const PORT = process.env.PORT || 4010;
 app.listen(PORT, () => {
   console.log(
     `✅ Serveur en écoute sur le port ${PORT} (${process.env.NODE_ENV})`

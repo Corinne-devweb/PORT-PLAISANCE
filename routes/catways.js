@@ -1,28 +1,41 @@
 const express = require("express");
 const router = express.Router();
 
-// Import des fonctions du service
-const service = require("../services/catways");
+// Import des services
+const catwayService = require("../services/catways");
 
-// Import du middleware pour vérifier l'existence du catway
+// Middlewares
+const authMiddleware = require("../middleware/auth");
 const checkCatwayExists = require("../middleware/checkCatwayExists");
 
-// Import du middleware d'authentification
-const authMiddleware = require("../middleware/auth"); // Utilisation du fichier auth.js
+// GET /api/catways - Liste tous les catways
+router.get("/", authMiddleware, catwayService.getAll);
 
-// La route pour lister tous les catways - protégée par l'authentification
-router.get("/", authMiddleware, service.getAll);
+// GET /api/catways/:catwayId - Détails d'un catway spécifique
+router.get(
+  "/:catwayId",
+  authMiddleware,
+  checkCatwayExists,
+  catwayService.getById
+);
 
-// La route pour récupérer les détails d'un catway spécifique - protégée par l'authentification
-router.get("/:id", authMiddleware, checkCatwayExists, service.getById);
+// POST /api/catways - Ajouter un nouveau catway
+router.post("/", authMiddleware, catwayService.create);
 
-// La route pour ajouter un nouveau catway - protégée par l'authentification
-router.post("/", authMiddleware, service.add);
+// PUT /api/catways/:catwayId - Modifier un catway existant
+router.put(
+  "/:catwayId",
+  authMiddleware,
+  checkCatwayExists,
+  catwayService.update
+);
 
-// La route pour modifier un catway existant - protégée par l'authentification
-router.put("/:id", authMiddleware, checkCatwayExists, service.update);
-
-// La route pour supprimer un catway - protégée par l'authentification
-router.delete("/:id", authMiddleware, checkCatwayExists, service.delete);
+// DELETE /api/catways/:catwayId - Supprimer un catway
+router.delete(
+  "/:catwayId",
+  authMiddleware,
+  checkCatwayExists,
+  catwayService.delete
+);
 
 module.exports = router;
