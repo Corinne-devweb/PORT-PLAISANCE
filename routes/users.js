@@ -27,15 +27,21 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Utilisateur non trouvé" });
     }
 
-    // Utilise la méthode du modèle
+    // Vérification du mot de passe
     const validPassword = await user.comparePassword(password);
     if (!validPassword) {
       return res.status(401).json({ message: "Mot de passe incorrect" });
     }
 
+    // Génération du token JWT
     const token = user.generateAuthToken();
 
-    res.json({ token });
+    // Supprimer le mot de passe avant d'envoyer l'utilisateur
+    const userWithoutPassword = user.toObject();
+    delete userWithoutPassword.password;
+
+    // Envoyer l'utilisateur et le token au frontend
+    res.json({ user: userWithoutPassword, token });
   } catch (error) {
     res.status(500).json({
       message: "Erreur serveur",
