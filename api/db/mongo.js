@@ -4,8 +4,12 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.URL_MONGO, {
-      dbName: "russel", // le nom de ta base de données
+    const mongoURI =
+      process.env.URL_MONGO || "mongodb://localhost:27017/russel"; // fallback local si variable non définie
+    await mongoose.connect(mongoURI, {
+      dbName: "russel", // nom de la base (utile si l'URL ne l'indique pas)
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
     console.log("✅ MongoDB connecté avec succès");
   } catch (error) {
