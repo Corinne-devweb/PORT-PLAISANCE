@@ -16,7 +16,7 @@ exports.getAll = async (req, res) => {
 // Détails d'un catway
 exports.getById = async (req, res) => {
   try {
-    const catway = await Catway.findOne({ catwayNumber: req.params.catwayId }); // Changé ici
+    const catway = await Catway.findOne({ catwayNumber: req.params.catwayId });
     if (!catway) {
       return res.status(404).json({ message: "Catway non trouvé" });
     }
@@ -29,9 +29,8 @@ exports.getById = async (req, res) => {
   }
 };
 
-// Ajouter un nouveau catway (renommé 'create' pour cohérence)
+// Ajouter un nouveau catway
 exports.create = async (req, res) => {
-  // Changé de 'add' à 'create'
   try {
     const { catwayNumber, catwayType, catwayState } = req.body;
 
@@ -61,7 +60,7 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const { catwayType, catwayState } = req.body;
-    const catway = await Catway.findOne({ catwayNumber: req.params.catwayId }); // Changé ici
+    const catway = await Catway.findOne({ catwayNumber: req.params.catwayId });
 
     if (!catway) {
       return res.status(404).json({ message: "Catway non trouvé" });
@@ -83,12 +82,12 @@ exports.update = async (req, res) => {
 // Supprimer un catway
 exports.delete = async (req, res) => {
   try {
-    const catway = await Catway.findOne({ catwayNumber: req.params.catwayId }); // Changé ici
+    const catway = await Catway.findOne({ catwayNumber: req.params.catwayId });
     if (!catway) {
       return res.status(404).json({ message: "Catway non trouvé" });
     }
 
-    await Catway.deleteOne({ catwayNumber: req.params.catwayId }); // Changé ici
+    await Catway.deleteOne({ catwayNumber: req.params.catwayId });
     res.status(200).json({ message: "Catway supprimé avec succès" });
   } catch (err) {
     res.status(500).json({

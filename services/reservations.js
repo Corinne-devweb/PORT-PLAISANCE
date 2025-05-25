@@ -21,7 +21,7 @@ module.exports = {
         throw new Error("Tous les champs sont requis");
       }
 
-      // Vérifie que le catway existe (converti catwayNumber en Number si besoin)
+      // Vérifie que le catway existe
       const catwayExists = await Catway.findOne({
         catwayNumber: Number(catwayNumber),
       });

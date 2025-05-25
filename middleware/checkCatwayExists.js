@@ -15,7 +15,7 @@ const checkCatwayExists = async (req, res, next) => {
     req.catway = catway;
     next();
   } catch (err) {
-    console.error("Erreur dans checkCatwayExists:", err); // ← Ajout important
+    console.error("Erreur dans checkCatwayExists:", err);
     res.status(500).json({
       message: "Erreur lors de la vérification du catway",
       error: err.message,

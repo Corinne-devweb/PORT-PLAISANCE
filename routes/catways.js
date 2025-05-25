@@ -8,10 +8,48 @@ const catwayService = require("../services/catways");
 const authMiddleware = require("../middleware/auth");
 const checkCatwayExists = require("../middleware/checkCatwayExists");
 
-// GET /api/catways - Liste tous les catways
+/**
+ * @swagger
+ * tags:
+ *   name: Catways
+ *   description: Gestion des catways
+ */
+
+/**
+ * @swagger
+ * /api/catways:
+ *   get:
+ *     summary: Récupérer la liste de tous les catways
+ *     tags: [Catways]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Liste des catways
+ */
 router.get("/", authMiddleware, catwayService.getAll);
 
-// GET /api/catways/:catwayId - Détails d'un catway spécifique
+/**
+ * @swagger
+ * /api/catways/{catwayId}:
+ *   get:
+ *     summary: Obtenir un catway par son ID
+ *     tags: [Catways]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: catwayId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID du catway
+ *     responses:
+ *       200:
+ *         description: Détails du catway
+ *       404:
+ *         description: Catway non trouvé
+ */
 router.get(
   "/:catwayId",
   authMiddleware,
@@ -19,10 +57,68 @@ router.get(
   catwayService.getById
 );
 
-// POST /api/catways - Ajouter un nouveau catway
+/**
+ * @swagger
+ * /api/catways:
+ *   post:
+ *     summary: Créer un nouveau catway
+ *     tags: [Catways]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - catwayNumber
+ *               - catwayType
+ *               - catwayState
+ *             properties:
+ *               catwayNumber:
+ *                 type: string
+ *               catwayType:
+ *                 type: string
+ *                 enum: [short, long]
+ *               catwayState:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Catway créé
+ */
 router.post("/", authMiddleware, catwayService.create);
 
-// PUT /api/catways/:catwayId - Modifier un catway existant
+/**
+ * @swagger
+ * /api/catways/{catwayId}:
+ *   put:
+ *     summary: Modifier l'état d'un catway
+ *     tags: [Catways]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: catwayId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID du catway
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               catwayState:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Catway mis à jour
+ *       404:
+ *         description: Catway non trouvé
+ */
 router.put(
   "/:catwayId",
   authMiddleware,
@@ -30,7 +126,27 @@ router.put(
   catwayService.update
 );
 
-// DELETE /api/catways/:catwayId - Supprimer un catway
+/**
+ * @swagger
+ * /api/catways/{catwayId}:
+ *   delete:
+ *     summary: Supprimer un catway
+ *     tags: [Catways]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: catwayId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID du catway
+ *     responses:
+ *       204:
+ *         description: Catway supprimé
+ *       404:
+ *         description: Catway non trouvé
+ */
 router.delete(
   "/:catwayId",
   authMiddleware,

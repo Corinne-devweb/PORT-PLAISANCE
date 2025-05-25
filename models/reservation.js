@@ -1,13 +1,12 @@
 const mongoose = require("mongoose");
 
-// Définition du schéma pour les réservations
 const reservationSchema = new mongoose.Schema(
   {
-    // Référence au modèle Catway
+    // Référence modèle Catway
     catwayNumber: {
       type: Number,
       required: true,
-      ref: "Catway", // Référence au modèle Catway
+      ref: "Catway",
     },
 
     // Le nom du client ayant effectué la réservation
@@ -34,7 +33,6 @@ const reservationSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: function (value) {
-          // La date de fin doit être après la date de début
           return value > this.startDate;
         },
         message: "La date de fin doit être postérieure à la date de début",
@@ -42,9 +40,8 @@ const reservationSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Ajoute createdAt et updatedAt automatiquement
+    timestamps: true,
   }
 );
 
-// Création du modèle Reservation
 module.exports = mongoose.model("Reservation", reservationSchema);

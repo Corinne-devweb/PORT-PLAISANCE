@@ -1,6 +1,6 @@
 const User = require("../models/user");
 
-// Création utilisateur (sans générer le token ici)
+// Création utilisateur
 exports.add = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -13,7 +13,6 @@ exports.add = async (req, res) => {
       return res.status(400).send("Un utilisateur avec cet email existe déjà");
     }
 
-    // On crée directement l'utilisateur : le hash sera fait automatiquement dans le modèle
     const newUser = new User({ username, email, password });
     await newUser.save();
 
@@ -56,7 +55,7 @@ exports.getByEmail = async (req, res) => {
   }
 };
 
-// Mise à jour utilisateur (sans modifier l'email)
+// Mise à jour utilisateur
 exports.update = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -66,11 +65,10 @@ exports.update = async (req, res) => {
     }
     user.username = username || user.username;
     if (password) {
-      user.password = password; // Laisse le modèle hasher automatiquement
+      user.password = password;
     }
     await user.save();
 
-    // Ne jamais renvoyer password ni tokens !
     const userResponse = {
       id: user._id,
       username: user.username,

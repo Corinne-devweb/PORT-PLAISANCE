@@ -4,7 +4,44 @@ const User = require("../models/user");
 const authMiddleware = require("../middleware/auth");
 const service = require("../services/users");
 
-// 1. Route pour créer un utilisateur (inscription) - pas besoin d'être connecté
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: Gestion des utilisateurs
+ */
+
+/**
+ * @swagger
+ * /api/users:
+ *   post:
+ *     summary: Créer un utilisateur (inscription)
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *               - name
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Utilisateur créé
+ *       400:
+ *         description: Données invalides
+ *       500:
+ *         description: Erreur serveur
+ */
 router.post("/", async (req, res) => {
   try {
     await service.add(req, res);
@@ -13,7 +50,36 @@ router.post("/", async (req, res) => {
   }
 });
 
-// 2. Route pour se connecter (login)
+/**
+ * @swagger
+ * /api/users/login:
+ *   post:
+ *     summary: Connexion utilisateur
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Connexion réussie, retourne le token et l'utilisateur
+ *       400:
+ *         description: Champs manquants
+ *       401:
+ *         description: Identifiants invalides
+ *       500:
+ *         description: Erreur serveur
+ */
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -27,20 +93,16 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Utilisateur non trouvé" });
     }
 
-    // Vérification du mot de passe
     const validPassword = await user.comparePassword(password);
     if (!validPassword) {
       return res.status(401).json({ message: "Mot de passe incorrect" });
     }
 
-    // Génération du token JWT
     const token = user.generateAuthToken();
 
-    // Supprimer le mot de passe avant d'envoyer l'utilisateur
     const userWithoutPassword = user.toObject();
     delete userWithoutPassword.password;
 
-    // Envoyer l'utilisateur et le token au frontend
     res.json({ user: userWithoutPassword, token });
   } catch (error) {
     res.status(500).json({
@@ -50,14 +112,97 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// 3. Route pour voir tous les utilisateurs — nécessite d'être connecté
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *     summary: Obtenir tous les utilisateurs
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Liste des utilisateurs
+ *       401:
+ *         description: Non autorisé
+ */
 router.get("/", authMiddleware, service.getAll);
 
-// 4. Route pour voir un utilisateur par email — nécessite d'être connecté
+/**
+ * @swagger
+ * /api/users/{email}:
+ *   get:
+ *     summary: Obtenir un utilisateur par email
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Utilisateur trouvé
+ *       404:
+ *         description: Utilisateur non trouvé
+ */
 router.get("/:email", authMiddleware, service.getByEmail);
 
-// 5. Routes update et delete — nécessite d'être connecté
+/**
+ * @swagger
+ * /api/users/{email}:
+ *   put:
+ *     summary: Mettre à jour un utilisateur
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Utilisateur mis à jour
+ *       404:
+ *         description: Utilisateur non trouvé
+ */
 router.put("/:email", authMiddleware, service.update);
+
+/**
+ * @swagger
+ * /api/users/{email}:
+ *   delete:
+ *     summary: Supprimer un utilisateur
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: email
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Utilisateur supprimé
+ *       404:
+ *         description: Utilisateur non trouvé
+ */
 router.delete("/:email", authMiddleware, service.delete);
 
 module.exports = router;

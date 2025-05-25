@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Le mot de passe est obligatoire"],
     minlength: [6, "Le mot de passe doit contenir au moins 6 caractères"],
-    select: false, // Ne pas renvoyer le mot de passe par défaut
+    select: false,
   },
   createdAt: {
     type: Date,
@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// Middleware pour hasher le mot de passe avant chaque sauvegarde (création ou update)
+// Middleware pour hasher le mot de passe avant chaque sauvegarde
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 10);
@@ -37,14 +37,14 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-// Méthode pour générer un JWT
+// Générer un JWT
 userSchema.methods.generateAuthToken = function () {
   return jwt.sign({ id: this._id, email: this.email }, process.env.SECRET_KEY, {
     expiresIn: "24h",
   });
 };
 
-// Méthode pour comparer un mot de passe (en clair) avec le hash stocké
+// Comparer un mot de passe avec le hash stocké
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
