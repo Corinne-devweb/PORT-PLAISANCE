@@ -1,7 +1,6 @@
 // app.js
 
-require("dotenv").config({ path: "./env/.env" });
-// Charger les variables .env
+require("dotenv").config(); // Sans path
 
 const express = require("express");
 const cors = require("cors");
