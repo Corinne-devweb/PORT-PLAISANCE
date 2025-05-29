@@ -49,7 +49,7 @@ export const getAllUsers = async () => {
   }
 };
 
-// Récupérer un utilisateur par son email
+// Récupérer un utilisateur par son email (à adapter selon besoin côté backend)
 export const getUserByEmail = async (email) => {
   try {
     const response = await fetch(
@@ -84,37 +84,31 @@ export const createUser = async (userData) => {
   }
 };
 
-// Modifier un utilisateur existant
-export const updateUser = async (email, userData) => {
+// Modifier un utilisateur existant (par ID Mongo)
+export const updateUser = async (userId, userData) => {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/users/${encodeURIComponent(email)}`,
-      {
-        method: "PUT",
-        headers: getAuthHeaders(),
-        body: JSON.stringify(userData),
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(userData),
+    });
     return await handleResponse(response);
   } catch (error) {
     console.error(
-      `Erreur lors de la modification de l'utilisateur ${email}:`,
+      `Erreur lors de la modification de l'utilisateur ${userId}:`,
       error
     );
     throw error;
   }
 };
 
-// Supprimer un utilisateur
-export const deleteUser = async (email) => {
+// Supprimer un utilisateur (par ID Mongo)
+export const deleteUser = async (userId) => {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/users/${encodeURIComponent(email)}`,
-      {
-        method: "DELETE",
-        headers: getAuthHeaders(),
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -130,7 +124,7 @@ export const deleteUser = async (email) => {
     }
   } catch (error) {
     console.error(
-      `Erreur lors de la suppression de l'utilisateur ${email}:`,
+      `Erreur lors de la suppression de l'utilisateur ${userId}:`,
       error
     );
     throw error;

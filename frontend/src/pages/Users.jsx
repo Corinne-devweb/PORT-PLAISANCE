@@ -49,7 +49,7 @@ const Users = () => {
       setSuccess("");
 
       if (editingUser) {
-        await updateUser(editingUser.email, userData);
+        await updateUser(editingUser._id, userData); // <-- utiliser _id ici
         setSuccess("Utilisateur modifié avec succès");
       } else {
         await createUser(userData);
@@ -64,13 +64,13 @@ const Users = () => {
     }
   };
 
-  const handleDelete = async (email) => {
+  const handleDelete = async (userId) => {
     if (
       window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")
     ) {
       try {
         setError("");
-        await deleteUser(email);
+        await deleteUser(userId); // <-- utiliser _id ici aussi
         setSuccess("Utilisateur supprimé avec succès");
         await loadUsers();
       } catch (error) {
@@ -133,7 +133,7 @@ const Users = () => {
               </thead>
               <tbody>
                 {users.map((user) => (
-                  <tr key={user.email}>
+                  <tr key={user._id}>
                     <td>{user.username}</td>
                     <td>{user.email}</td>
                     <td>{formatDate(user.createdAt)}</td>
@@ -146,7 +146,7 @@ const Users = () => {
                           Modifier
                         </button>
                         <button
-                          onClick={() => handleDelete(user.email)}
+                          onClick={() => handleDelete(user._id)}
                           className="btn btn-danger btn-small"
                         >
                           Supprimer

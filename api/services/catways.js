@@ -1,6 +1,11 @@
 const Catway = require("../models/catway");
 
-// Lister tous les catways
+/**
+ * Récupérer tous les catways.
+ * @param {import('express').Request} req - Objet requête Express
+ * @param {import('express').Response} res - Objet réponse Express
+ * @returns {Promise<void>}
+ */
 exports.getAll = async (req, res) => {
   try {
     const catways = await Catway.find();
@@ -13,7 +18,12 @@ exports.getAll = async (req, res) => {
   }
 };
 
-// Détails d'un catway
+/**
+ * Récupérer un catway par son numéro.
+ * @param {import('express').Request} req - Objet requête Express
+ * @param {import('express').Response} res - Objet réponse Express
+ * @returns {Promise<void>}
+ */
 exports.getById = async (req, res) => {
   try {
     const catway = await Catway.findOne({ catwayNumber: req.params.catwayId });
@@ -29,7 +39,12 @@ exports.getById = async (req, res) => {
   }
 };
 
-// Ajouter un nouveau catway
+/**
+ * Créer un nouveau catway.
+ * @param {import('express').Request} req - Objet requête Express contenant catwayNumber, catwayType, catwayState dans req.body
+ * @param {import('express').Response} res - Objet réponse Express
+ * @returns {Promise<void>}
+ */
 exports.create = async (req, res) => {
   try {
     const { catwayNumber, catwayType, catwayState } = req.body;
@@ -56,7 +71,12 @@ exports.create = async (req, res) => {
   }
 };
 
-// Modifier un catway
+/**
+ * Mettre à jour un catway existant par son numéro.
+ * @param {import('express').Request} req - Objet requête Express, catwayId en params, catwayType et catwayState dans body
+ * @param {import('express').Response} res - Objet réponse Express
+ * @returns {Promise<void>}
+ */
 exports.update = async (req, res) => {
   try {
     const { catwayType, catwayState } = req.body;
@@ -79,7 +99,12 @@ exports.update = async (req, res) => {
   }
 };
 
-// Supprimer un catway
+/**
+ * Supprimer un catway par son numéro.
+ * @param {import('express').Request} req - Objet requête Express, catwayId en params
+ * @param {import('express').Response} res - Objet réponse Express
+ * @returns {Promise<void>}
+ */
 exports.delete = async (req, res) => {
   try {
     const catway = await Catway.findOne({ catwayNumber: req.params.catwayId });

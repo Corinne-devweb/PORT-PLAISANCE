@@ -1,4 +1,3 @@
-// swagger.js
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
@@ -31,7 +30,12 @@ const options = {
       },
     ],
   },
-  apis: ["./routes/*.js"], // Inclut tous les fichiers de routes
+  apis: [
+    "./routes/*.js", // Routes avec endpoints
+    "./middleware/*.js", // Middlewares (si commentaires Swagger présents)
+    "./services/*.js", // Services (si commentaires Swagger présents)
+    "./models/*.js", // Modèles avec définitions de schémas
+  ],
 };
 
 const specs = swaggerJsdoc(options);

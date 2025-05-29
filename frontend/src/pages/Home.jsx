@@ -85,7 +85,7 @@ const Home = ({ onLogin }) => {
 
         <div style={{ marginTop: "2rem", textAlign: "center" }}>
           <a
-            href="/api-docs"
+            href="http://localhost:4010/api-docs"
             target="_blank"
             rel="noopener noreferrer"
             className="btn"

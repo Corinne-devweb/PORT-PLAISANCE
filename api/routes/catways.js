@@ -16,6 +16,14 @@ const checkCatwayExists = require("../middleware/checkCatwayExists");
  */
 
 /**
+ * Récupère la liste de tous les catways
+ * @function
+ * @name getAllCatways
+ * @route GET /api/catways
+ * @group Catways
+ * @returns {Array<Object>} 200 - Liste des catways
+ * @throws {Error} 500 - Erreur serveur
+ *
  * @swagger
  * /api/catways:
  *   get:
@@ -30,6 +38,15 @@ const checkCatwayExists = require("../middleware/checkCatwayExists");
 router.get("/", authMiddleware, catwayService.getAll);
 
 /**
+ * Récupère un catway par ID
+ * @function
+ * @name getCatwayById
+ * @route GET /api/catways/:catwayId
+ * @group Catways
+ * @param {string} catwayId.path.required - ID du catway
+ * @returns {Object} 200 - Catway trouvé
+ * @throws {Error} 404 - Catway non trouvé
+ *
  * @swagger
  * /api/catways/{catwayId}:
  *   get:
@@ -58,6 +75,15 @@ router.get(
 );
 
 /**
+ * Crée un nouveau catway
+ * @function
+ * @name createCatway
+ * @route POST /api/catways
+ * @group Catways
+ * @param {object} req.body - Données du catway
+ * @returns {Object} 201 - Catway créé
+ * @throws {Error} 400 - Données invalides
+ *
  * @swagger
  * /api/catways:
  *   post:
@@ -90,6 +116,16 @@ router.get(
 router.post("/", authMiddleware, catwayService.create);
 
 /**
+ * Met à jour un catway existant
+ * @function
+ * @name updateCatway
+ * @route PUT /api/catways/:catwayId
+ * @group Catways
+ * @param {string} catwayId.path.required - ID du catway
+ * @param {object} req.body - Nouvel état du catway
+ * @returns {Object} 200 - Catway mis à jour
+ * @throws {Error} 404 - Catway non trouvé
+ *
  * @swagger
  * /api/catways/{catwayId}:
  *   put:
@@ -127,6 +163,15 @@ router.put(
 );
 
 /**
+ * Supprime un catway
+ * @function
+ * @name deleteCatway
+ * @route DELETE /api/catways/:catwayId
+ * @group Catways
+ * @param {string} catwayId.path.required - ID du catway
+ * @returns {null} 204 - Suppression réussie
+ * @throws {Error} 404 - Catway non trouvé
+ *
  * @swagger
  * /api/catways/{catwayId}:
  *   delete:

@@ -20,7 +20,11 @@ const Navbar = ({ user, onLogout }) => {
         <Link to="/catways">Catways</Link>
         <Link to="/reservations">Réservations</Link>
         <Link to="/users">Utilisateurs</Link>
-        <a href="/api-docs" target="_blank" rel="noopener noreferrer">
+        <a
+          href="http://localhost:4010/api-docs"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Documentation API
         </a>
       </div>
