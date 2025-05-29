@@ -2,7 +2,11 @@ const Reservation = require("../models/reservation");
 const Catway = require("../models/catway");
 
 module.exports = {
-  // Récupérer toutes les réservations
+  /**
+   * Récupérer toutes les réservations.
+   * @returns {Promise<Array>} Liste des réservations
+   * @throws {Error} En cas d'erreur serveur
+   */
   getAll: async () => {
     try {
       const reservations = await Reservation.find();
@@ -12,7 +16,17 @@ module.exports = {
     }
   },
 
-  // Créer une nouvelle réservation
+  /**
+   * Créer une nouvelle réservation.
+   * @param {Object} data - Données de la réservation
+   * @param {number|string} data.catwayNumber - Numéro du catway réservé
+   * @param {string} data.clientName - Nom du client
+   * @param {string} data.boatName - Nom du bateau
+   * @param {Date|string} data.startDate - Date de début
+   * @param {Date|string} data.endDate - Date de fin
+   * @returns {Promise<Object>} La réservation créée
+   * @throws {Error} Si un champ est manquant ou si le catway n'existe pas
+   */
   create: async (data) => {
     try {
       const { catwayNumber, clientName, boatName, startDate, endDate } = data;
@@ -44,7 +58,12 @@ module.exports = {
     }
   },
 
-  // Récupérer une réservation par son ID
+  /**
+   * Récupérer une réservation par son ID.
+   * @param {string} reservationId - ID de la réservation
+   * @returns {Promise<Object>} La réservation trouvée
+   * @throws {Error} Si la réservation n'est pas trouvée ou erreur serveur
+   */
   getById: async (reservationId) => {
     try {
       const reservation = await Reservation.findById(reservationId);
@@ -57,7 +76,13 @@ module.exports = {
     }
   },
 
-  // Mettre à jour une réservation
+  /**
+   * Mettre à jour une réservation.
+   * @param {string} reservationId - ID de la réservation à modifier
+   * @param {Object} updateData - Données à mettre à jour
+   * @returns {Promise<Object>} La réservation mise à jour
+   * @throws {Error} Si la réservation ou le catway n'existent pas ou erreur serveur
+   */
   update: async (reservationId, updateData) => {
     try {
       if (updateData.catwayNumber) {
@@ -86,7 +111,12 @@ module.exports = {
     }
   },
 
-  // Supprimer une réservation
+  /**
+   * Supprimer une réservation par son ID.
+   * @param {string} reservationId - ID de la réservation à supprimer
+   * @returns {Promise<Object>} Message de confirmation
+   * @throws {Error} Si la réservation n'est pas trouvée ou erreur serveur
+   */
   delete: async (reservationId) => {
     try {
       const deleted = await Reservation.findByIdAndDelete(reservationId);
@@ -99,7 +129,12 @@ module.exports = {
     }
   },
 
-  // Récupérer les réservations par numéro de catway
+  /**
+   * Récupérer les réservations par numéro de catway.
+   * @param {number|string} catwayId - Numéro du catway
+   * @returns {Promise<Array>} Liste des réservations pour ce catway
+   * @throws {Error} En cas d'erreur serveur
+   */
   getByCatway: async (catwayId) => {
     try {
       const reservations = await Reservation.find({

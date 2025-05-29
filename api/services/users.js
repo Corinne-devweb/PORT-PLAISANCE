@@ -1,6 +1,10 @@
 const User = require("../models/user");
 
-// Création utilisateur
+/**
+ * Créer un nouvel utilisateur.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 exports.add = async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -30,7 +34,11 @@ exports.add = async (req, res) => {
   }
 };
 
-// Liste utilisateurs sans mot de passe ni tokens
+/**
+ * Récupérer la liste des utilisateurs sans les mots de passe ni tokens.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 exports.getAll = async (req, res) => {
   try {
     const users = await User.find().select("-password -tokens");
@@ -40,7 +48,11 @@ exports.getAll = async (req, res) => {
   }
 };
 
-// Récupérer utilisateur par email sans mot de passe ni tokens
+/**
+ * Récupérer un utilisateur par email (sans mot de passe ni tokens).
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 exports.getByEmail = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.params.email }).select(
@@ -55,7 +67,11 @@ exports.getByEmail = async (req, res) => {
   }
 };
 
-// Mise à jour utilisateur
+/**
+ * Mettre à jour un utilisateur (username et/ou mot de passe).
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 exports.update = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -80,7 +96,11 @@ exports.update = async (req, res) => {
   }
 };
 
-// Suppression utilisateur
+/**
+ * Supprimer un utilisateur par email.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 exports.delete = async (req, res) => {
   try {
     const user = await User.findOneAndDelete({ email: req.params.email });

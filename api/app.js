@@ -1,4 +1,8 @@
 // app.js
+
+require("dotenv").config({ path: "./env/.env" });
+// Charger les variables .env
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -9,17 +13,19 @@ const { swaggerUi, specs } = require("./swagger");
 
 const app = express();
 
+// Configuration CORS (accepte toutes les origines, attention en prod)
 const corsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true,
+  origin: "*",
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static("public"));
 
+// Connexion à MongoDB
 connectDB();
 
+// Routes API
 app.use("/api", routes);
 
 // Documentation Swagger
@@ -31,6 +37,7 @@ app.use((err, req, res, next) => {
   res.status(500).send("Une erreur est survenue !");
 });
 
+// Démarrage du serveur
 const PORT = process.env.PORT || 4010;
 app.listen(PORT, () => {
   console.log(
