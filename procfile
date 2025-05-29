@@ -1,2 +1,3 @@
-web: cd api && npm start
+web: node api/app.js
+
 
