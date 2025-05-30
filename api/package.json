@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "dev": "env-cmd -f ./env/.env.dev nodemon ./bin/www",
+    "dev": "env-cmd -f ./env/.env.dev nodemon app.js",
     "prod": "env-cmd -f ./env/.env.prod node app.js"
   },
   "dependencies": {
